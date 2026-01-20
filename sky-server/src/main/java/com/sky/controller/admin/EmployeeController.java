@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
@@ -9,6 +10,7 @@ import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
 import com.sky.vo.EmployeeLoginVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,7 +62,19 @@ public class EmployeeController {
 
         return Result.success(employeeLoginVO);
     }
-
+    /**
+     * 新增员工
+     * 当前端提交的数据和实体类中对应的属性差别比较大时，建议使用DTO来封装数据
+     * 比如这个登录方法 ,前端发来的数据不用Employee封装，而要用EmployeeDTO来封装
+     * 前端提交什么数据，对应的DTO对象就封装什么属性。
+     */
+    @PostMapping
+    public Result save(@RequestBody EmployeeDTO employeeDTO)
+    {
+        log.info("新增员工：{}",employeeDTO);
+        employeeService.save(employeeDTO);
+        return Result.success();
+    }
     /**
      * 退出
      *
