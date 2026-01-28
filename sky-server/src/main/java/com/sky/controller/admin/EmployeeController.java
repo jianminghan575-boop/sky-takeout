@@ -98,4 +98,16 @@ public class EmployeeController {
         // *** 返回的日期数据，在前端展示的是一串数字 需要在WebMvcConfig.java中添加一个转换器统一对日期类型进行格式话处理
         return Result.success(pageResult);
     }
+    /**
+     * 启用禁用员工账号
+     * 路径参数，路径参数用@PathVariable注解 接收，前端发送的参数，路径参数用{}括起来
+     */
+    @PostMapping("/status/{status}")
+    public Result startOrStop(@PathVariable Integer status,Long id)
+    {
+        log.info("员工状态：{}",status);
+        log.info("员工id：{}",id);
+        employeeService.startOrStop(status,id);
+        return Result.success();
+    }
 }
