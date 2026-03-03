@@ -1,0 +1,47 @@
+package com.sky.service;/**
+ * @author Hjm
+ * @date 2026/2/9 15:00
+ * @motto 不经一番寒彻骨 怎得梅花扑鼻香
+ * @description
+ */
+
+import com.sky.dto.SetmealDTO;
+import com.sky.dto.SetmealPageQueryDTO;
+import com.sky.result.PageResult;
+import com.sky.vo.SetmealVO;
+import java.util.List;
+
+/**
+ * @author Hjm
+ * @date 2026/2/9 15:00
+ * @description
+ */
+public interface SetmealService
+{
+	void saveWithDish(SetmealDTO setmealDTO);
+	
+	PageResult pageQuery(SetmealPageQueryDTO setmealPageQueryDTO);
+	/**
+	 * 批量删除套餐
+	 * @param ids
+	 */
+	void deleteBatch(List<Long> ids);
+	/**
+	 * 根据id查询套餐和关联的菜品数据
+	 * @param id
+	 * @return
+	 */
+	SetmealVO getByIdWithDish(Long id);
+	
+	/**
+	 * 修改套餐
+	 * @param setmealDTO
+	 */
+	void update(SetmealDTO setmealDTO);
+	/**
+	 * 套餐起售、停售
+	 * @param status
+	 * @param id
+	 */
+	void startOrStop(Integer status, Long id);
+}

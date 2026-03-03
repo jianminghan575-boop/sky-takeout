@@ -39,7 +39,8 @@ public class CategoryServiceImpl implements CategoryService {
      * 新增分类
      * @param categoryDTO
      */
-    public void save(CategoryDTO categoryDTO) {
+    public void save(CategoryDTO categoryDTO)
+    {
         Category category = new Category();
         //属性拷贝
         BeanUtils.copyProperties(categoryDTO, category);
