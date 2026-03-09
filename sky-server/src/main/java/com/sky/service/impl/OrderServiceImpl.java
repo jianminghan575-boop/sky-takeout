@@ -19,6 +19,7 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,8 @@ public class OrderServiceImpl implements OrderService {
 	private AddressBookMapper addressBookMapper;
 	@Autowired
 	private WeChatPayUtil weChatPayUtil;
+	@Autowired
+	private WebSocketServer webSocketServer;
 	
 	/**
 	 * 用户下单
@@ -158,6 +161,21 @@ public class OrderServiceImpl implements OrderService {
 		log.info("调用updateStatus，用于替换微信支付更新数据库状态的问题");
 		orderMapper.updateStatus(OrderStatus, OrderPaidStatus, check_out_time, orderNumber);
 		
+		
+		
+		Orders ordersDB = orderMapper.getByNumber(orderNumber);
+		//通过webSocketServer向客户端浏览器推送消息
+		//要求推送的消息格式是json类型，并且包含3个字段（type、orderId、content）
+		Map map = new HashMap();
+		map.put("type", 1);//消息类型，1表示来单提醒
+		map.put("orderId", ordersDB.getId()); //订单的id
+		map.put("content", "订单号：" +Long.parseLong(orderNumber));//订单号
+		
+		//转化为json格式
+		String json = JSON.toJSONString(map);
+		//通过WebSocket实现来单提醒，向客户端浏览器推送消息(调用WebSocketServer类中群发的方法)
+		webSocketServer.sendToAllClient(json);
+
 		return vo;
 	}
 	
