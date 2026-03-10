@@ -66,4 +66,6 @@ public interface OrderMapper {
 	List<Orders> getByStatusAndOrderTimeLT(Integer status, LocalDateTime orderTime);
 	
 	Double sumByMap(Map map);
+	
+	List<GoodsSalesDTO> getSalesTop10(Map map);
 }
