@@ -22,5 +22,11 @@ public interface ReportMapper
 	 * @return
 	 */
 	Integer getUsersByTime(Map map);
+	/**
+	 * 订单统计接口
+	 * @param map
+	 * @return
+	 */
+	Integer getOrdersByTime(Map map);
 	
 }
