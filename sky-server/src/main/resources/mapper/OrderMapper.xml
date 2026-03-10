@@ -94,5 +94,7 @@
         order by number desc
         limit 0, 10
     </select>
-
+    <select id="countByMap" resultType="java.lang.Integer">
+        select count(id) from orders
+    </select>
 </mapper>
