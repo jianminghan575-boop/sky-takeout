@@ -2,8 +2,10 @@ package com.sky.service.impl;
 
 import com.sky.entity.Orders;
 import com.sky.mapper.OrderMapper;
+import com.sky.mapper.ReportMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.TurnoverReportVO;
+import com.sky.vo.UserReportVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ public class ReportServiceImpl implements ReportService
 {
 	@Autowired
 	private OrderMapper orderMapper;
+	@Autowired
+	private ReportMapper reportMapper;
 	/**
 	 * 根据时间区间统计营业额
 	 * @param begin
@@ -60,5 +64,45 @@ public class ReportServiceImpl implements ReportService
 							   .turnoverList(StringUtils.join(turnoverList,","))
 							   .build();
 	}
+	/**
+	 * 用户统计
+	 * @param begin
+	 * @param end
+	 * @return
+	 */
+	public UserReportVO userStatistics(LocalDate begin, LocalDate end) {
+		List<LocalDate> dateList = new ArrayList<>();
+		dateList.add(begin);
+		while (!begin.equals(end)){
+			begin = begin.plusDays(1);
+			dateList.add(begin);
+		}
+		
+		List<Integer> newUserList = new ArrayList<>();
+		List<Integer> totalUserList = new ArrayList<>();
+		for (LocalDate date : dateList) {
+			Map map = new HashMap();
+			// 获取当天时间最大值
+			LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
+			map.put("end", endTime);
+			Integer totalUsers = reportMapper.getUsersByTime(map);
+			totalUsers = totalUsers == null ? 0 : totalUsers;
+			totalUserList.add(totalUsers);
+			
+			// 获取当天时间最小值
+			LocalDateTime beginTime = LocalDateTime.of(date, LocalTime.MIN);
+			map.put("begin", beginTime);
+			Integer newUsers = reportMapper.getUsersByTime(map);
+			newUsers = newUsers == null ? 0 : newUsers;
+			newUserList.add(newUsers);
+		}
+		
+		return UserReportVO.builder()
+						   .dateList(StringUtil.join(",", dateList))
+						   .newUserList(StringUtil.join(",", newUserList))
+						   .totalUserList(StringUtil.join(",", totalUserList))
+						   .build();
+	}
+	
 	
 }
